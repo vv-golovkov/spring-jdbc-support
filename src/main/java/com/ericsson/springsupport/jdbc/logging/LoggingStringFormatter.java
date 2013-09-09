@@ -7,7 +7,6 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * Supports %d, %b, %f, %s arguments.
- * 
  */
 public class LoggingStringFormatter {
     private static final char DIGITAL_F = 'd';
