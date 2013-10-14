@@ -13,6 +13,8 @@ import com.ericsson.springsupport.jdbc.datasource.DataSourceAware;
 import com.ericsson.springsupport.jdbc.datasource.DataSourceProvider;
 import com.ericsson.springsupport.jdbc.exception.IncorrectResultDataException;
 import com.ericsson.springsupport.jdbc.logging.SmartLogger;
+import com.ericsson.springsupport.jdbc.mapping.map.MapExtractor;
+import com.ericsson.springsupport.jdbc.mapping.map.RowInterceptor;
 import com.ericsson.springsupport.jdbc.mapping.pair.Pair;
 import com.ericsson.springsupport.jdbc.mapping.pair.PairMapper;
 import com.ericsson.springsupport.jdbc.param.SqlParamsBuilder;
@@ -30,6 +32,15 @@ public class SpringJdbcSupport extends DataSourceProvider {
 
     public SqlParamsBuilder getSqlParamsBuilder() {
         return new SqlParamsBuilder();
+    }
+    
+    /*************** query for MAPS ***************/
+    public <K, V> Map<K, V> queryForMap(String sql, RowInterceptor<K, V> rowInterceptor) {
+        return queryForMap(sql, SqlParamsBuilder.emptyParametersMap(), rowInterceptor);
+    }
+    
+    public <K, V> Map<K, V> queryForMap(String sql, SqlParameterSource parameters, RowInterceptor<K, V> rowInterceptor) {
+        return getNamedParameterJdbcTemplate().query(sql, parameters, new MapExtractor<K, V>(rowInterceptor));
     }
 
     /*************** query for PAIR ***************/
